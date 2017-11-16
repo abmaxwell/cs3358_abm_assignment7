@@ -86,19 +86,30 @@ namespace CS3358_FA17A7
 
    // CONSTRUCTORS AND DESTRUCTOR
 
-   p_queue::p_queue(size_type initial_capacity)
+   p_queue::p_queue(size_type initial_capacity) : capacity(initial_capacity),
+                                                  used(0)
    {
-      cerr << "p_queue(size_type initial_capacity) not implemented yet" << endl;
+      // Adjust capacity based on user specified initial_capacity. Any attempt
+      // to specify a value <= 0 will be set to default capacity.
+      if(initial_capacity < 1){capacity = DEFAULT_CAPACITY;}
+
+      // Allocate new dynamic array based on specified capacity.
+      heap = new ItemType[capacity];
    }
 
-   p_queue::p_queue(const p_queue& src)
+   p_queue::p_queue(const p_queue& src) : capacity(src.capacity), used(src.used)
    {
-      cerr << "p_queue(const p_queue&) not implemented yet" << endl;
+      // Create a new dynamic array based on src capacity.
+      heap = new ItemType[capacity];
+
+      // Deep copy each item src to the new dynamic array.
+      for(size_type index = 0; index < capacity; ++index)
+         heap[index] = src.heap[index];
    }
 
    p_queue::~p_queue()
    {
-      cerr << "~p_queue() not implemented yet" << endl;
+      delete [] heap;
    }
 
    // MODIFICATION MEMBER FUNCTIONS
