@@ -115,13 +115,49 @@ namespace CS3358_FA17A7
    // MODIFICATION MEMBER FUNCTIONS
    p_queue& p_queue::operator=(const p_queue& rhs)
    {
-      cerr << "operator=(const p_queue&) not implemented yet" << endl;
+      // Self-assignment fail safe. Check for self-assignment.
+      // If self-assignment is present then return invoking object.
+      if (this == &rhs)
+         return *this;
+
+      // Create temporary dynamic array to safely assign contents
+      // of array.
+      ItemType *temp_heap = new ItemType[rhs.capacity];
+
+      // Moved contents of rhs array to temp
+      for (size_type index = 0; index < rhs.used; ++index) {
+         temp_heap[index] = rhs.heap[index];
+      }
+
+      // Deallocate old dynamic array.
+      delete [] heap;
+
+      // Start assigning member variables from rhs.
+      heap = temp_heap;
+      capacity = rhs.capacity;
+      used = rhs.used;
       return *this;
    }
 
    void p_queue::push(const value_type& entry, size_type priority)
    {
-      cerr << "push(const value_type&, size_type) not implemented yet" << endl;
+      // Check to see if we need to resize the dynamic array. If
+      // we do the multiple current capacity by 1.25 and add +1 to
+      // satisfy the resize rule seen in previous assignments.
+      if(used == capacity){resize(size_type (1.25 * capacity)+1);}
+
+      // Copy new items into heap and update used.
+      heap[used].data = entry;
+      heap[used].priority = priority;
+      ++used;
+
+      // While the new entry has a priority that is higher than its parent,
+      // swap the new entry with the parent.
+      for(size_type index = used; index != 0; index = parent_index(index)){
+         if(heap[index].priority > parent_priority(index)){
+            swap_with_parent(index);
+         } else { break;}
+      }
    }
 
    void p_queue::pop()
@@ -177,8 +213,8 @@ namespace CS3358_FA17A7
    // Post: The index of "the parent of the item at heap[i]" has
    //       been returned.
    {
-      cerr << "parent_index(size_type) not implemented yet" << endl;
-      return 0; // dummy return value
+      assert((i > 0) && (1 < used));
+      return ((i/2)-1);
    }
 
    p_queue::size_type
@@ -187,8 +223,8 @@ namespace CS3358_FA17A7
    // Post: The priority of "the parent of the item at heap[i]" has
    //       been returned.
    {
-      cerr << "parent_priority(size_type) not implemented yet" << endl;
-      return 0; // dummy return value
+      assert((i > 0) && (1 < used));
+      return heap[parent_index(i)].priority;
    }
 
    p_queue::size_type
