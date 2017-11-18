@@ -169,20 +169,26 @@ namespace CS3358_FA17A7
 
    p_queue::size_type p_queue::size() const
    {
-      cerr << "size() not implemented yet" << endl;
-      return 0; // dummy return value
+      return used;
    }
 
    bool p_queue::empty() const
    {
-      cerr << "empty() not implemented yet" << endl;
-      return false; // dummy return value
+      return (used == 0);
    }
 
    p_queue::value_type p_queue::front() const
    {
-      cerr << "front() not implemented yet" << endl;
-      return value_type(); // dummy return value
+      assert(size() > 0);
+      size_type highestPriority = heap[0].priority;
+      size_type highestIndex = 0;
+      for(size_type index = 1; index < used; ++index){
+         if(highestPriority < heap[index].priority){
+            highestPriority = heap[index].priority;
+            highestIndex = index;
+         }
+      }
+      return heap[highestIndex].data;
    }
 
    // PRIVATE HELPER FUNCTIONS
@@ -255,7 +261,8 @@ namespace CS3358_FA17A7
    // Pre:  (i > 0) && (i < used)
    // Post: The item at heap[i] has been swapped with its parent.
    {
-      cerr << "swap_with_parent(size_type) not implemented yet" << endl;
+      assert((i > 0) && (i < used));
+
    }
 }
 
