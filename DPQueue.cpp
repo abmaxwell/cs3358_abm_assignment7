@@ -110,6 +110,7 @@ namespace CS3358_FA17A7
    p_queue::~p_queue()
    {
       delete [] heap;
+      heap = 0;
    }
 
    // MODIFICATION MEMBER FUNCTIONS
@@ -124,7 +125,7 @@ namespace CS3358_FA17A7
       // of array.
       ItemType *temp_heap = new ItemType[rhs.capacity];
 
-      // Moved contents of rhs array to temp
+      // Move contents of rhs array to temp
       for (size_type index = 0; index < rhs.used; ++index) {
          temp_heap[index] = rhs.heap[index];
       }
@@ -201,7 +202,14 @@ namespace CS3358_FA17A7
    //       NOTE: All existing items in the p_queue are preserved and
    //             used remains unchanged.
    {
-      cerr << "resize(size_type) not implemented yet" << endl;
+      if(new_capacity < used){new_capacity = used;}     // Check resize ability.
+      ItemType* temp_heap = new ItemType[new_capacity]; // Create temp heap.
+      for(size_type index = 0; index < used; ++index){  // Deep copy items.
+         temp_heap[index] = heap[index];
+      }
+      delete [] heap;                                   // Deallocate memory.
+      heap = temp_heap;                                 // Reestablish new heap.
+      capacity =new_capacity;                           // Update capacity.
    }
 
    bool p_queue::is_leaf(size_type i) const
@@ -209,8 +217,8 @@ namespace CS3358_FA17A7
    // Post: If the item at heap[i] has no children, true has been
    //       returned, otherwise false has been returned.
    {
-      cerr << "is_leaf(size_type) not implemented yet" << endl;
-      return false; // dummy return value
+      assert(i <used);
+      return (((i*2)+1) >= used);
    }
 
    p_queue::size_type
@@ -263,6 +271,10 @@ namespace CS3358_FA17A7
    {
       assert((i > 0) && (i < used));
 
+      size_type parentIndex = parent_index(i); // Find parent index.
+      ItemType temp_item = heap[parentIndex];  // Grab parent item.
+      heap[parentIndex] = heap[i];             // Set parent to child item.
+      heap[i] = temp_item;                     // Set child to parent item.
    }
 }
 
